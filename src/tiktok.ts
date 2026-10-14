@@ -13,7 +13,7 @@ interface LiveConnection {
 }
 
 interface TikTokConnectorModule {
-  TikTokLiveConnection: new (uniqueId: string) => LiveConnection;
+  TikTokLiveConnection: new (uniqueId: string, options: { processInitialData?: boolean }) => LiveConnection;
   WebcastEvent?: { CHAT?: string };
   ControlEvent?: { CONNECTED?: string; DISCONNECTED?: string; ERROR?: string };
 }
@@ -67,7 +67,7 @@ export class TikTokLiveAdapter {
       const connector = await this.loadConnector();
       if (generation !== this.generation) return;
 
-      const connection = new connector.TikTokLiveConnection(uniqueId);
+      const connection = new connector.TikTokLiveConnection(uniqueId, { processInitialData: false });
       const chatEvent = connector.WebcastEvent?.CHAT ?? "chat";
       const connectedEvent = connector.ControlEvent?.CONNECTED ?? "connected";
       const disconnectedEvent = connector.ControlEvent?.DISCONNECTED ?? "disconnected";

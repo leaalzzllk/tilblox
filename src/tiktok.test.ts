@@ -22,11 +22,16 @@ test("limpa o estado quando o conector não pode ser carregado", async () => {
 
 test("encerra o estado de conexão quando o TikTok rejeita a conexão", async () => {
   const connectionError = new Error("Live não encontrada");
+  let connectionOptions: { processInitialData?: boolean } | undefined;
   const adapter = new TikTokLiveAdapter(
     async () => {},
     () => {},
     async () => ({
       TikTokLiveConnection: class {
+        constructor(_uniqueId: string, options: { processInitialData?: boolean }) {
+          connectionOptions = options;
+        }
+
         on(_event: string, _listener: (message: TikTokChatMessage) => void): void {}
         connect(): Promise<unknown> {
           return Promise.reject(connectionError);
@@ -38,6 +43,7 @@ test("encerra o estado de conexão quando o TikTok rejeita a conexão", async ()
   await adapter.connect("criador");
   await new Promise<void>((resolve) => setImmediate(resolve));
 
+  assert.deepEqual(connectionOptions, { processInitialData: false });
   assert.deepEqual(adapter.status, {
     connected: false,
     connecting: false,
