@@ -3,7 +3,7 @@ import express, { type Request, type Response, type NextFunction } from "express
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { RequestQueue, parseRobloxUsername } from "./queue.js";
-import { TikTokLiveAdapter, type TikTokChatMessage } from "./tiktok.js";
+import { getTikTokCommentText, TikTokLiveAdapter, type TikTokChatMessage } from "./tiktok.js";
 
 const app = express();
 const port = Number(process.env.PORT ?? 3000);
@@ -45,10 +45,10 @@ function limitTestRequests(request: Request, response: Response, next: NextFunct
 }
 
 async function handleTikTokComment(message: TikTokChatMessage): Promise<void> {
-  const username = parseRobloxUsername(message.comment ?? "");
+  const username = parseRobloxUsername(getTikTokCommentText(message));
   if (!username) return;
 
-  const sender = message.user?.uniqueId ?? message.user?.nickname ?? "TikTok";
+  const sender = message.user?.uniqueId ?? message.user?.displayId ?? message.user?.nickname ?? "TikTok";
   try {
     const request = await queue.enqueue(username, `TikTok @${sender}`);
     console.info(`Pedido na fila: ${request.name} (@${sender})`);

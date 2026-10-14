@@ -1,6 +1,22 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { TikTokLiveAdapter, type TikTokChatMessage } from "./tiktok.js";
+import { parseRobloxUsername } from "./queue.js";
+import { getTikTokCommentText, TikTokLiveAdapter, type TikTokChatMessage } from "./tiktok.js";
+
+test("lê o texto de chat entregue pelo conector TikTok", () => {
+  const message: TikTokChatMessage = {
+    content: "!join Example_User",
+    user: { displayId: "viewer123" }
+  };
+  const comment = getTikTokCommentText(message);
+
+  assert.equal(comment, "!join Example_User");
+  assert.equal(parseRobloxUsername(comment), "Example_User");
+});
+
+test("continua aceitando o campo comment de versões anteriores do conector", () => {
+  assert.equal(getTikTokCommentText({ comment: "Example_User" }), "Example_User");
+});
 
 test("limpa o estado quando o conector não pode ser carregado", async () => {
   const adapter = new TikTokLiveAdapter(

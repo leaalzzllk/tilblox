@@ -1,9 +1,15 @@
 export interface TikTokChatMessage {
   comment?: string;
+  content?: string;
   user?: {
     uniqueId?: string;
     nickname?: string;
+    displayId?: string;
   };
+}
+
+export function getTikTokCommentText(message: TikTokChatMessage): string {
+  return message.content ?? message.comment ?? "";
 }
 
 interface LiveConnection {
