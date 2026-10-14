@@ -30,7 +30,7 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 -- ===================== CONFIG DA PONTE TIKBLOX =====================
-local BRIDGE_URL = "https://YOUR_RENDER_SERVICE.onrender.com/api/roblox"
+local BRIDGE_URL = "https://tikblox-bridge.onrender.com/api/roblox"
 local BRIDGE_TOKEN = "YOUR_ROBLOX_BRIDGE_TOKEN" -- o MESMO segredo do .env do seu servidor
 local POLL_INTERVAL_SECONDS = 3
 
